@@ -15,13 +15,24 @@ class TasksController extends Controller
      */
     public function index()
     {
-        // タスク一覧を取得
-        $tasks = Task::paginate(25);
+        $data = [];
+        if (\Auth::check()){
+            //ログインユーザーの取得
+            $user = \Auth::user();
+            //ログインユーザーの作ったタスクのみ取得
+            $tasks = $user->tasks()->orderBy('created_at', 'desc')->paginate(10);
+            //取得したタスクを'task_x'と名付け、後でindex.bladeに引き渡す
+            $data = ['tasks_x' => $tasks];
+        
+            //$tasks = Task::paginate(25);
 
-        // タスク一覧ビューでそれを表示
-        return view('tasks.index', [
-            'tasks' => $tasks,
-        ]);
+        }
+            // タスク一覧ビューでそれを表示（index.bladeに引き渡す）
+            return view('tasks.index', $data
+            //[
+            //    'tasks_x' => $tasks,
+            //]
+            );
     }
 
     /**
@@ -57,6 +68,8 @@ class TasksController extends Controller
         $task = new Task;
         $task->content = $request->content;
         $task->status = $request->status;
+        //課題対応でuser_id追記
+        $task->user_id =  \Auth::id();
         $task->save();
 
         // トップページへリダイレクトさせる

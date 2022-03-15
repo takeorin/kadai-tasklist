@@ -4,7 +4,8 @@
 
    <h1>タスク一覧</h1>
 
-    @if (count($tasks) > 0)
+@if (\Auth::check())
+    @if (count($tasks_x) > 0)
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -14,12 +15,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($tasks as $task)
+                @foreach ($tasks_x as $task_a)
                 <tr>
                      {{-- タスク詳細ページへのリンク --}}
-                    <td>{!! link_to_route('tasks.show', $task->id, ['task' => $task->id]) !!}</td>
-                    <td>{{ $task->content }}</td>
-                    <td>{{ $task->status}}</td>
+                    <td>{!! link_to_route('tasks.show', $task_a->id, ['task' => $task_a->id]) !!}</td>
+                    <td>{{ $task_a->content }}</td>
+                    <td>{{ $task_a->status}}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -27,8 +28,19 @@
     @endif
     
     {{-- ページネーションのリンク --}}
-    {{ $tasks->links() }}
+    {{ $tasks_x->links() }}
     
     {{-- タスク作成ページへのリンク --}}
     {!! link_to_route('tasks.create', '新規タスクの投稿', [], ['class' => 'btn btn-primary']) !!}
+
+@endif
+
+    {{-- ユーザー登録ページへのリンク --}}
+     <div class="center jumbotron">
+        <div class="text-center">
+            {{-- <h1>Welcome to the TaskList</h1> --}}
+            {{-- ユーザ登録ページへのリンク --}}
+            {!! link_to_route('signup.get', 'Sign up now!', [], ['class' => 'btn btn-lg btn-primary']) !!}
+        </div>
+    </div>
 @endsection
