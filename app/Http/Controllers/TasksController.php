@@ -87,11 +87,22 @@ class TasksController extends Controller
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
 
+
+ // 認証済みユーザ（閲覧者）がその投稿の所有者でない場合は、トップページにリダイレクト
+        if (\Auth::id() !== $task->user_id) {
+            //return view('tasks.index');
+            return redirect('/');
+        }
+        
+        
         // タスク詳細ビューでそれを表示
         return view('tasks.show', [
             'task' => $task,
         ]);
     }
+    
+    
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -103,6 +114,11 @@ class TasksController extends Controller
     {
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
+        
+        // 認証済みユーザ（閲覧者）がその投稿の所有者でない場合は、トップページにリダイレクト
+        if (\Auth::id() !== $task->user_id) {
+            return redirect('/');
+        }
 
         // タスク編集ビューでそれを表示
         return view('tasks.edit', [
@@ -147,6 +163,13 @@ class TasksController extends Controller
     {
         // idの値でタスクを検索して取得
         $task = Task::findOrFail($id);
+        
+        // 認証済みユーザ（閲覧者）がその投稿の所有者でない場合は、トップページにリダイレクト
+        if (\Auth::id() !== $task->user_id) {
+            //return view('tasks.index');
+            return redirect('/');
+        }
+        
         // タスクを削除
         $task->delete();
 
